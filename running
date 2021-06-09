@@ -1,7 +1,7 @@
 
 !Command: show running-config
-!Running configuration last done at: Wed Jun  9 21:21:00 2021
-!Time: Wed Jun  9 21:21:07 2021
+!Running configuration last done at: Wed Jun  9 21:21:46 2021
+!Time: Wed Jun  9 21:21:49 2021
 
 version 9.2(3) Bios:version  
 hostname dist-sw01
@@ -24,7 +24,6 @@ feature interface-vlan
 feature hsrp
 feature lacp
 feature dhcp
-feature vpc
 feature vrrpv3
 
 no password strength-check
@@ -71,10 +70,6 @@ ipv6 dhcp relay
 vrf context management
   ip route 0.0.0.0/0 10.10.20.254
 hardware forwarding unicast trace
-vpc domain 101
-  peer-switch
-  peer-keepalive destination 10.10.20.178 source 10.10.20.177
-  peer-gateway
 
 
 interface Vlan1
@@ -133,8 +128,6 @@ interface Vlan105
 
 interface port-channel1
   switchport mode trunk
-  spanning-tree port type network
-  vpc peer-link
 
 interface Ethernet1/1
   description VPC Peer Link

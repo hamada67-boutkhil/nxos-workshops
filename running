@@ -1,7 +1,7 @@
 
 !Command: show running-config
-!Running configuration last done at: Wed Jun  9 21:11:05 2021
-!Time: Wed Jun  9 21:11:14 2021
+!Running configuration last done at: Wed Jun  9 21:13:42 2021
+!Time: Wed Jun  9 21:13:46 2021
 
 version 9.2(3) Bios:version  
 hostname dist-sw01
@@ -23,6 +23,7 @@ feature isis
 feature interface-vlan
 feature hsrp
 feature lacp
+feature dhcp
 feature vpc
 
 no password strength-check
@@ -63,6 +64,9 @@ vlan 112
 vlan 113
   name Python
 
+service dhcp
+ip dhcp relay
+ipv6 dhcp relay
 vrf context management
   ip route 0.0.0.0/0 10.10.20.254
 hardware forwarding unicast trace

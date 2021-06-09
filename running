@@ -1,7 +1,7 @@
 
 !Command: show running-config
-!Running configuration last done at: Wed Jun  9 20:50:34 2021
-!Time: Wed Jun  9 20:50:54 2021
+!Running configuration last done at: Wed Jun  9 21:11:05 2021
+!Time: Wed Jun  9 21:11:14 2021
 
 version 9.2(3) Bios:version  
 hostname dist-sw01
@@ -18,12 +18,11 @@ feature telnet
 feature nxapi
 cfs eth distribute
 feature ospf
-feature bgp
+feature eigrp
 feature isis
 feature interface-vlan
 feature hsrp
 feature lacp
-feature dhcp
 feature vpc
 
 no password strength-check
@@ -46,7 +45,7 @@ rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
 rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
 rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
 
-vlan 1,101-105,111-112,120,222
+vlan 1,101-105,111-113
 vlan 101
   name prod
 vlan 102
@@ -61,14 +60,9 @@ vlan 111
   name WASTC
 vlan 112
   name REST-API
-vlan 120
+vlan 113
   name Python
-vlan 222
-  name VAULT
 
-service dhcp
-ip dhcp relay
-ipv6 dhcp relay
 vrf context management
   ip route 0.0.0.0/0 10.10.20.254
 hardware forwarding unicast trace
@@ -76,10 +70,6 @@ vpc domain 101
   peer-switch
   peer-keepalive destination 10.10.20.178 source 10.10.20.177
   peer-gateway
-
-nxapi http port 80
-nxapi ssl ciphers weak
-nxapi ssl protocols TLSv1 
 
 
 interface Vlan1
@@ -155,6 +145,7 @@ interface Ethernet1/3
   description L3 link to dist-rtr01
   no switchport
   ip address 172.16.252.1/30
+  ip router eigrp EIGRP-TEST
   no ip ospf passive-interface
   ip router ospf 1 area 0.0.0.0
   no shutdown
@@ -439,30 +430,16 @@ interface mgmt0
 interface loopback0
   description to
   shutdown
-
-interface loopback1
-  description loopback1 To Advertise over BGP
-  ip address 192.168.1.1/32
 line console
   exec-timeout 0
   terminal width  511
 line vty
 boot nxos bootflash:/nxos.9.2.3.bin 
+router eigrp EIGRP-TEST
+  router-id 1.1.1.1
 router ospf 1
   passive-interface default
 router isis TEST
-  address-family ipv4 unicast
-router bgp 65531
-  router-id 1.1.1.1
-  address-family ipv4 unicast
-    network 192.168.1.1/32
-  neighbor 192.168.0.2
-    remote-as 65532
-    update-source loopback0
-    disable-connected-check
-    ebgp-multihop 10
-    address-family ipv4 unicast
-      next-hop-self
 event manager applet BOOTCONFIG
   event syslog pattern "mgmt0 is UP"
   action 2.0 cli python bootflash:set_boot.py
